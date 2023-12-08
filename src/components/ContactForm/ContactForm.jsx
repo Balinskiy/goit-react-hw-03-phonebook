@@ -6,7 +6,6 @@ class ContactFormComponent extends Component {
   state = {
     name: '',
     number: '',
-    contacts: [],
   };
 
   onChangeInput = evt => {
