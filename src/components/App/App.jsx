@@ -15,6 +15,26 @@ class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const localContacts = localStorage.getItem('contacts');
+    if (localContacts && JSON.parse(localContacts.length > 0)) {
+      this.setState({
+        contacts: JSON.parse(localContacts),
+      });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      const contactData = this.state.contacts.map(({ name, number }) => ({
+        name,
+        number,
+      }));
+
+      localStorage.setItem('contacts', JSON.stringify(contactData));
+    }
+  }
+
   onChangeFilter = evt => {
     this.setState({ filter: evt.target.value });
   };
@@ -53,10 +73,12 @@ class App extends Component {
           <TitleSecondary>Contacts</TitleSecondary>
           <TitleThird>Find contact name by number:</TitleThird>
           <FilterComponent onChange={this.onChangeFilter} value={filter} />
-          <ContactListComponent
-            filtredContacts={filtredContacts}
-            onDeleteContact={this.onDeleteContact}
-          />
+          {this.state.contacts.length > 0 && (
+            <ContactListComponent
+              filtredContacts={filtredContacts}
+              onDeleteContact={this.onDeleteContact}
+            />
+          )}
         </Box>
       </>
     );
